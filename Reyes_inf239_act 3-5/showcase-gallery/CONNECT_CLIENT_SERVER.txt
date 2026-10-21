@@ -1,0 +1,20 @@
+CLIENT / SERVER CONNECTION
+
+1. Open the showcase-gallery folder in VS Code.
+2. Ensure server/.env contains your MongoDB connection string and PORT=5000.
+3. Terminal 1:
+   cd server
+   npm install
+   npm start
+4. Terminal 2:
+   cd client
+   npm install
+   npm run dev
+5. Open the local URL printed by Vite (usually http://localhost:5173).
+
+The client sends /api requests through Vite to http://localhost:5000.
+The server uses MongoDB to store products. For MongoDB Atlas, ensure your IP is allowed
+in Network Access and the database user has the needed permissions.
+
+SECURITY: The supplied archive contained a MongoDB connection string in server/.env.
+Rotate that database user's password if this archive was shared, and do not publish .env.
