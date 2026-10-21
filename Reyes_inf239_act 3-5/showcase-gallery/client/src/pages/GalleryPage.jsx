@@ -15,7 +15,7 @@ function GalleryPage({ products, loading }) {
         </h2>
 
         <p className="mt-3 text-white/80">
-          {products.length} items available · by [Ace Reyes]
+          {products.length} items available · by Jayce Rafael D. Reyes
         </p>
       </section>
 
