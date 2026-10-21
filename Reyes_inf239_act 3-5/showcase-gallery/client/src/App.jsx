@@ -1,17 +1,27 @@
+
 import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import GalleryPage from "./pages/GalleryPage";
 import ManagePage from "./pages/ManagePage";
 
+const API_URL =
+  "https://reyes-inf239-act-3-5-connected.onrender.com";
+
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [view, setView] = useState("gallery");
+  const [editingProduct, setEditingProduct] = useState(null);
 
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const response = await fetch("/api/products");
-        if (!response.ok) throw new Error("Failed to load products");
+        const response = await fetch(`${API_URL}/api/products`);
+
+        if (!response.ok) {
+          throw new Error("Failed to load products");
+        }
+
         setProducts(await response.json());
       } catch (error) {
         console.error("Could not connect to the server:", error);
@@ -19,23 +29,27 @@ function App() {
         setLoading(false);
       }
     };
+
     loadProducts();
   }, []);
-  const [view, setView] = useState("gallery");
-  const [editingProduct, setEditingProduct] = useState(null);
 
   const saveProduct = async (data) => {
     const isEditing = Boolean(editingProduct);
+
     const url = isEditing
-      ? `/api/products/${editingProduct._id}`
-      : "/api/products";
+      ? `${API_URL}/api/products/${editingProduct._id}`
+      : `${API_URL}/api/products`;
+
     const response = await fetch(url, {
       method: isEditing ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) throw new Error("Could not save product");
+    if (!response.ok) {
+      throw new Error("Could not save product");
+    }
+
     const savedProduct = await response.json();
 
     setProducts((prev) =>
@@ -43,20 +57,27 @@ function App() {
         ? prev.map((p) => (p._id === savedProduct._id ? savedProduct : p))
         : [savedProduct, ...prev]
     );
+
     setEditingProduct(null);
   };
 
   const deleteProduct = async (id) => {
     if (!confirm("Delete this product?")) return;
 
-    const response = await fetch(`/api/products/${id}`, { method: "DELETE" });
+    const response = await fetch(`${API_URL}/api/products/${id}`, {
+      method: "DELETE",
+    });
+
     if (!response.ok) {
       alert("Could not delete the product. Please try again.");
       return;
     }
 
     setProducts((prev) => prev.filter((p) => p._id !== id));
-    if (editingProduct?._id === id) setEditingProduct(null);
+
+    if (editingProduct?._id === id) {
+      setEditingProduct(null);
+    }
   };
 
   const startEdit = (product) => {
